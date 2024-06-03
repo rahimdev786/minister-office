@@ -13,6 +13,9 @@ export class MinistryOffice extends Document {
   @Prop({ required: true })
   notes: string;
 
+  @Prop()
+  userId?: string;
+
   @Prop({ required: true })
   fullName: string;
 }
