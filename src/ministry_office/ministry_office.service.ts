@@ -19,42 +19,27 @@ export class MinistryOfficeService {
   async createMinistryUser(
     createMinistryOfficeDto: CreateMinistryOfficeDto,
   ): Promise<MinistryOffice> {
-    const { civilIdNumber } = createMinistryOfficeDto;
-    const existingUser = await this.ministryOfficeModel
-      .findOne({ civilIdNumber })
-      .exec();
-    if (existingUser) {
-      throw new ConflictException(
-        `Ministry Office with civilIdNumber ${civilIdNumber} already exists`,
-      );
-    }
-    const createdMinistryOffice = new this.ministryOfficeModel(
+    //const { civilIdNumber } = createMinistryOfficeDto;
+    // const existingUser = await this.ministryOfficeModel
+    //   .findOne({ civilIdNumber })
+    //   .exec();
+    // if (existingUser) {
+    //   throw new ConflictException(
+    //     `Ministry Office with civilIdNumber ${civilIdNumber} already exists`,
+    //   );
+    // }
+    const createdMinistryOffice = await new this.ministryOfficeModel(
       createMinistryOfficeDto,
     );
     return createdMinistryOffice.save();
   }
 
-  findAll() {
-    return `This action returns all ministryOffice`;
-  }
-
-  async findOneByCivilId(civilId: string): Promise<MinistryOffice> {
+  async findbyCivilId(civilId: string): Promise<MinistryOffice[]> {
     const ministryOffice = await this.ministryOfficeModel
-      .findOne({ civilId })
+      .find({ civilIdNumber: civilId })
+      .select('-_id -__v')
+      .lean()
       .exec();
-    if (!ministryOffice) {
-      throw new NotFoundException(
-        `Ministry Office with civilId ${civilId} not found`,
-      );
-    }
     return ministryOffice;
-  }
-
-  update(id: number, updateMinistryOfficeDto: UpdateMinistryOfficeDto) {
-    return `This action updates a #${id} ministryOffice`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} ministryOffice`;
   }
 }

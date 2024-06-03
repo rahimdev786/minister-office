@@ -2,12 +2,12 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
+  Length,
   Max,
-  MAX,
   Min,
-  min,
 } from 'class-validator';
 
 export class CreateMinistryOfficeDto {
@@ -19,11 +19,10 @@ export class CreateMinistryOfficeDto {
   @IsOptional()
   userId?: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
-  @Min(5)
-  @Max(12)
-  civilIdNumber: number;
+  @Length(12, 12)
+  civilIdNumber: string;
 
   @IsString()
   @IsNotEmpty()

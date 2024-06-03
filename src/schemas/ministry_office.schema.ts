@@ -8,7 +8,7 @@ export class MinistryOffice extends Document {
   UserName: string;
 
   @Prop({ required: true })
-  civilIdNumber: number;
+  civilIdNumber: string;
 
   @Prop({ required: true })
   notes: string;
@@ -20,4 +20,5 @@ export class MinistryOffice extends Document {
   fullName: string;
 }
 
-export const MinistryOfficeSchema = SchemaFactory.createForClass(MinistryOffice);
+export const MinistryOfficeSchema =
+  SchemaFactory.createForClass(MinistryOffice);

@@ -16,7 +16,10 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(PORT, HOST, () => {
-    Logger.debug(`Server listening at http://${HOST}:${PORT}/`, 'MOI-API');
+    Logger.debug(
+      `Server listening at http://${HOST}:${PORT}/`,
+      'ministory_office',
+    );
   });
 }
 bootstrap();
