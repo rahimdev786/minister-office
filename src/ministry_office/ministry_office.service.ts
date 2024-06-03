@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateMinistryOfficeDto } from './dto/create-ministry_office.dto';
 import { UpdateMinistryOfficeDto } from './dto/update-ministry_office.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,9 +16,18 @@ export class MinistryOfficeService {
     private ministryOfficeModel: Model<MinistryOffice>,
   ) {}
 
-  async create(
+  async createMinistryUser(
     createMinistryOfficeDto: CreateMinistryOfficeDto,
   ): Promise<MinistryOffice> {
+    const { civilIdNumber } = createMinistryOfficeDto;
+    const existingUser = await this.ministryOfficeModel
+      .findOne({ civilIdNumber })
+      .exec();
+    if (existingUser) {
+      throw new ConflictException(
+        `Ministry Office with civilIdNumber ${civilIdNumber} already exists`,
+      );
+    }
     const createdMinistryOffice = new this.ministryOfficeModel(
       createMinistryOfficeDto,
     );
@@ -25,10 +38,14 @@ export class MinistryOfficeService {
     return `This action returns all ministryOffice`;
   }
 
-  async findOne(id: string): Promise<MinistryOffice> {
-    const ministryOffice = await this.ministryOfficeModel.findById(id).exec();
+  async findOneByCivilId(civilId: string): Promise<MinistryOffice> {
+    const ministryOffice = await this.ministryOfficeModel
+      .findOne({ civilId })
+      .exec();
     if (!ministryOffice) {
-      throw new NotFoundException(`Ministry Office with ID ${id} not found`);
+      throw new NotFoundException(
+        `Ministry Office with civilId ${civilId} not found`,
+      );
     }
     return ministryOffice;
   }
