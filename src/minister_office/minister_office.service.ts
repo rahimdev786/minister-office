@@ -11,7 +11,7 @@ export class MinistryOfficeService {
     private ministryOfficeModel: Model<MinistryOffice>,
   ) {}
 
-  async createMinistryUser(
+  async createMinisterUser(
     createMinistryOfficeDto: CreateMinistryOfficeDto,
   ): Promise<MinistryOffice> {
     //const { civilIdNumber } = createMinistryOfficeDto;
@@ -29,23 +29,51 @@ export class MinistryOfficeService {
     return createdMinistryOffice.save();
   }
 
-  async findbyNoteCivilId(civilId: string): Promise<MinistryOffice[]> {
-    if (!civilId) {
-      console.log('civilid empty')
-    }
-    return await this.ministryOfficeModel
-      .find({ civilIdNumber: civilId })
-      .select('-_id -__v')
-      .lean()
-      .exec();
-  }
-
-  async findbyAllNotes(): Promise<MinistryOffice[]> {
-   return await this.ministryOfficeModel
-      .find()
-      .select('-_id -__v')
-      .lean()
-      .exec();
-  }
+ 
+  async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
+    data: MinistryOffice[],
+    totalItems: number,
+    currentpage: number,
+    totalpages:number
+  }> {
+    const totalCount = await this.ministryOfficeModel.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+    const results = await this.ministryOfficeModel
+        .find({ civilIdNumber: civilId })
+        .select('-_id -__v')
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean()
+        .exec();
+    return {  
+      currentpage: page,
+      totalpages:totalPages,
+      totalItems: totalCount,
+      data: results,
+    };
+}
+ 
+  async findbyAllNotes(page: number, limit: number): Promise<{
+    data: MinistryOffice[],
+    totalItems: number,
+    currentpage: number,
+    totalpages:number
+  }> {
+    const totalCount = await this.ministryOfficeModel.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+    const results = await this.ministryOfficeModel
+        .find()
+        .select('-_id -__v')
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean()
+        .exec();
+    return {  
+      currentpage: page,
+      totalpages:totalPages,
+      totalItems: totalCount,
+      data: results,
+    };
+}
 
 }

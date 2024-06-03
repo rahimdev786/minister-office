@@ -6,33 +6,32 @@ import {
   Param,
   Res,
   HttpStatus,
+  Query
 } from '@nestjs/common';
 import { MinistryOfficeService } from './minister_office.service';
 import { CreateMinistryOfficeDto } from './dto/create-minister_office.dto';
 import { MinistryOffice } from 'src/schemas/minister_office.schema';
-import { FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
 @Controller('minister_office')
 export class MinistryOfficeController {
   constructor(private readonly ministryOfficeService: MinistryOfficeService) {}
 
   @Post()
-  async createMinistryUser(
+  async createMinisterUser(
     @Body() createMinistryOfficeDto: CreateMinistryOfficeDto,
     @Res() res: FastifyReply,
   ): Promise<MinistryOffice> {
     try {
-      const record = this.ministryOfficeService.createMinistryUser(
+      const record = this.ministryOfficeService.createMinisterUser(
         createMinistryOfficeDto,
       );
-
       if (!record) {
         return res.send({
           status: HttpStatus.NOT_ACCEPTABLE,
           message: 'note has not been created',
         });
       }
-
       return res.send({
         status: HttpStatus.CREATED,
         message: 'note has been created',
@@ -46,17 +45,31 @@ export class MinistryOfficeController {
   }
 
   @Get('find_all/:civilId')
-  async findOneNoteByCivilID(@Param('civilId') civilId: string, @Res() res: FastifyReply) {
+  async getAllNotesByCivilID(
+    @Param('civilId') civilId: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 2,
+    @Res() res: FastifyReply) {
     try {
-      const result = await this.ministryOfficeService.findbyNoteCivilId(civilId);
-      if (result.length === 0) {
+      const {currentpage,totalpages,
+        totalItems, data } = await this.ministryOfficeService.findbyNoteCivilId(civilId,page, limit);
+      if (currentpage > totalpages) {
         return res.send({
+          data:data,
+          status:400,
+          message: 'no data avaiable on this page'
+        });
+      } 
+      if (data.length === 0) {
+        return res.send({
+          data:data,
           status: HttpStatus.NOT_FOUND,
-          message: 'data not found with' + civilId,
+          message: 'data not found with page = ' +currentpage+ ' on ' + civilId,
         });
       }
       return res.send({
-        data: result,
+         currentpage, totalpages,
+        totalItems, data
       });
     } catch (error) {
       return res.send({
@@ -66,24 +79,39 @@ export class MinistryOfficeController {
     }
   }
 
-   @Get('find_all')
-  async findAllNotes(@Res() res: FastifyReply) {
+@Get('find_all')
+async getAllNotes(
+  @Query('page') page: number = 1,
+  @Query('limit') limit: number = 5,
+  @Res() res: FastifyReply) {
     try {
-      const result = await this.ministryOfficeService.findbyAllNotes();
-      if (result.length === 0) {
+      const {currentpage,totalpages,
+        totalItems, data } = await this.ministryOfficeService.findbyAllNotes(page, limit);
+      if (currentpage > totalpages) {
         return res.send({
+          data:data,
+          status:400,
+          message: 'no data avaiable on this page ' + currentpage
+        });
+      } 
+      if (data.length === 0) {
+        return res.send({
+          data:data,
           status: HttpStatus.NOT_FOUND,
           message: 'data not found',
         });
       }
       return res.send({
-        data: result,
+        currentpage, totalpages,
+        totalItems, data
       });
     } catch (error) {
-      return res.send({
-        status: HttpStatus.BAD_REQUEST,
-        message: 'Failed to retrive data',
-      });
+      res.send(
+        {
+          status:500,
+          message: 'Internal server error'
+        }
+      );
     }
   }
 }
