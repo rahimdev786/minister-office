@@ -5,7 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { debugLevel, HOST, PORT } from './config';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -13,6 +13,8 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
     { logger: debugLevel },
   );
+  app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(PORT, HOST, () => {
     Logger.debug(`Server listening at http://${HOST}:${PORT}/`, 'MOI-API');
   });
