@@ -9,8 +9,8 @@ export class MinistryOfficeController {
   constructor(private readonly ministryOfficeService: MinistryOfficeService) {}
 
   @Post()
-  async create(@Body() createMinistryOfficeDto: CreateMinistryOfficeDto) :Promise<MinistryOffice> {
-    return this.ministryOfficeService.create(createMinistryOfficeDto);
+  async createMinistryUser(@Body() createMinistryOfficeDto: CreateMinistryOfficeDto) :Promise<MinistryOffice> {
+    return this.ministryOfficeService.createMinistryUser(createMinistryOfficeDto);
   }
 
   @Get()
@@ -18,9 +18,9 @@ export class MinistryOfficeController {
     return this.ministryOfficeService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<MinistryOffice> {
-    return this.ministryOfficeService.findOne(id);
+  @Get(':civilId')
+  findOne(@Param('civilId') civilId: string): Promise<MinistryOffice> {
+    return this.ministryOfficeService.findOneByCivilId(civilId );
   }
 
   @Patch(':id')

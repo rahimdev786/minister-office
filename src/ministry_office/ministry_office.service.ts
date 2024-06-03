@@ -20,15 +20,15 @@ export class MinistryOfficeService {
   }
 
  
-  async findOne(id: string): Promise<MinistryOffice> {
-    const ministryOffice = await this.ministryOfficeModel.findById(id).exec();
+  async findOneByUserId(civilId: string): Promise<MinistryOffice> {
+    const ministryOffice = await this.ministryOfficeModel.findOne({ civilId }).exec();
     if (!ministryOffice) {
-      throw new NotFoundException(`Ministry Office with ID ${id} not found`);
+      throw new NotFoundException(`Ministry Office with civilId ${civilId} not found`);
     }
     return ministryOffice;
   }
 
-  
+
   update(id: number, updateMinistryOfficeDto: UpdateMinistryOfficeDto) {
     return `This action updates a #${id} ministryOffice`;
   }
