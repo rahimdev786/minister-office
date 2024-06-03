@@ -1,5 +1,14 @@
 // dto/create-ministry-office.dto.ts
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  MAX,
+  Min,
+  min,
+} from 'class-validator';
 
 export class CreateMinistryOfficeDto {
   @IsString()
@@ -12,6 +21,8 @@ export class CreateMinistryOfficeDto {
 
   @IsNumber()
   @IsNotEmpty()
+  @Min(5)
+  @Max(12)
   civilIdNumber: number;
 
   @IsString()

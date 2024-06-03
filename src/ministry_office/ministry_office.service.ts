@@ -7,11 +7,17 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class MinistryOfficeService {
-  constructor(@InjectModel(MinistryOffice.name) private ministryOfficeModel: Model<MinistryOffice>) {}
+  constructor(
+    @InjectModel(MinistryOffice.name)
+    private ministryOfficeModel: Model<MinistryOffice>,
+  ) {}
 
-
-  async create(createMinistryOfficeDto: CreateMinistryOfficeDto): Promise<MinistryOffice> {
-    const createdMinistryOffice = new this.ministryOfficeModel(createMinistryOfficeDto);
+  async create(
+    createMinistryOfficeDto: CreateMinistryOfficeDto,
+  ): Promise<MinistryOffice> {
+    const createdMinistryOffice = new this.ministryOfficeModel(
+      createMinistryOfficeDto,
+    );
     return createdMinistryOffice.save();
   }
 
@@ -19,7 +25,6 @@ export class MinistryOfficeService {
     return `This action returns all ministryOffice`;
   }
 
- 
   async findOne(id: string): Promise<MinistryOffice> {
     const ministryOffice = await this.ministryOfficeModel.findById(id).exec();
     if (!ministryOffice) {
@@ -28,7 +33,6 @@ export class MinistryOfficeService {
     return ministryOffice;
   }
 
-  
   update(id: number, updateMinistryOfficeDto: UpdateMinistryOfficeDto) {
     return `This action updates a #${id} ministryOffice`;
   }
