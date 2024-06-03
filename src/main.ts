@@ -18,7 +18,7 @@ async function bootstrap() {
   await app.listen(PORT, HOST, () => {
     Logger.debug(
       `Server listening at http://${HOST}:${PORT}/`,
-      'ministory_office',
+      'minister_office',
     );
   });
 }

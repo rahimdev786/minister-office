@@ -1,12 +1,7 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { CreateMinistryOfficeDto } from './dto/create-ministry_office.dto';
-import { UpdateMinistryOfficeDto } from './dto/update-ministry_office.dto';
+import { Injectable } from '@nestjs/common';
+import { CreateMinistryOfficeDto } from './dto/create-minister_office.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { MinistryOffice } from 'src/schemas/ministry_office.schema';
+import { MinistryOffice } from 'src/schemas/minister_office.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -34,12 +29,23 @@ export class MinistryOfficeService {
     return createdMinistryOffice.save();
   }
 
-  async findbyCivilId(civilId: string): Promise<MinistryOffice[]> {
-    const ministryOffice = await this.ministryOfficeModel
+  async findbyNoteCivilId(civilId: string): Promise<MinistryOffice[]> {
+    if (!civilId) {
+      console.log('civilid empty')
+    }
+    return await this.ministryOfficeModel
       .find({ civilIdNumber: civilId })
       .select('-_id -__v')
       .lean()
       .exec();
-    return ministryOffice;
   }
+
+  async findbyAllNotes(): Promise<MinistryOffice[]> {
+   return await this.ministryOfficeModel
+      .find()
+      .select('-_id -__v')
+      .lean()
+      .exec();
+  }
+
 }

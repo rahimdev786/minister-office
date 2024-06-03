@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { MinistryOfficeService } from './ministry_office.service';
-import { MinistryOfficeController } from './ministry_office.controller';
+import { MinistryOfficeService } from './minister_office.service';
+import { MinistryOfficeController } from './minister_office.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   MinistryOffice,
   MinistryOfficeSchema,
-} from 'src/schemas/ministry_office.schema';
+} from 'src/schemas/minister_office.schema';
 
 @Module({
   imports: [
