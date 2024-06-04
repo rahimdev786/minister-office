@@ -44,6 +44,19 @@ export class MinistryOfficeController {
     }
   }
 
+
+
+@Post(':ownerCivilIdNumber/addRelation')
+  addRelation(
+    @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
+    @Body() updateRelationDto: OwnerRelationsDTO,
+) {
+  
+  console.log(ownerCivilIdNumber)
+       return this.ministryOfficeService.addRelation(ownerCivilIdNumber, updateRelationDto);
+  }
+
+
   @Get('Findall/:civilId')
   async getAllNotesByCivilID(
     @Param('civilId') civilId: string,

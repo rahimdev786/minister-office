@@ -16,24 +16,20 @@ export class MinistryOfficeService {
   async saveOwnerDetails(
     ownerData: OwnerDetailsDTO,
   ): Promise<OwnerDetails> {
-    // const existingUser = await this.ownerDetailsModel
-    //   .findOne({ OwnerCivilIdNumber:ownerData.OwnerCivilIdNumber})
-    //   .exec();
-    
-    // if (existingUser) {
-    //   throw new ConflictException(
-    //     `Ministry Office with civilIdNumber ${ownerData.OwnerCivilIdNumber} already exists`,
-    //   );
-    // }
-
     console.log(ownerData)
-    const createdMinistryOffice = await new this.ownerDetailsModel(
-      ownerData,
-    );
-    return createdMinistryOffice.save();
+    const createdMinistryOffice = new this.ownerDetailsModel(ownerData).save()
+    return  await createdMinistryOffice
   }
 
-  async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
+  async addRelation(ownerCivilIdNumber: string, updateRelationDto: OwnerRelationsDTO): Promise<OwnerDetails> {
+    return await this.ownerDetailsModel.findOneAndUpdate(
+      { OwnerCivilIdNumber: ownerCivilIdNumber },
+      { $push: { Relations: updateRelationDto } },
+      { new: true, useFindAndModify: false }
+    ).exec();
+  }
+
+async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
     data: OwnerDetails[],
     totalItems: number,
     currentpage: number,

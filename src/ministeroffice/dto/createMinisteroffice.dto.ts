@@ -48,7 +48,6 @@ export class OwnerRelationsDTO {
   OwnerCivilIdNumber: string;
 
   @IsString()
-  @IsOptional()
   Notes: string;
 
   @IsNumberString()
@@ -57,7 +56,6 @@ export class OwnerRelationsDTO {
   RelatedCivilIdNumber: string;
 
   @IsString()
-  @IsNotEmpty()
   RelatedWithOwner: string;
 }
 

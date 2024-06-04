@@ -22,13 +22,12 @@ export class OwnerDetails extends Document {
 
   @Prop({ type: [{ type: Object, ref: 'OwnerRelations' }] })
   @Type(() => OwnerRelations)
-  RELATION?: OwnerRelations[];
+  Relations: OwnerRelations[];
 }
 
 
 @Schema({ timestamps: true })
 export class OwnerRelations extends Document {
-
   @Prop({ required: true })
   OwnerCivilIdNumber: string
   
