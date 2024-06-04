@@ -36,7 +36,10 @@ export class MinistryOfficeService {
     currentpage: number,
     totalpages:number
   }> {
-    const totalCount = await this.ministryOfficeModel.countDocuments();
+    const totalCount = await this.ministryOfficeModel.countDocuments({
+      civilIdNumber:civilId
+    });
+    
     const totalPages = Math.ceil(totalCount / limit);
     const results = await this.ministryOfficeModel
         .find({ civilIdNumber: civilId })

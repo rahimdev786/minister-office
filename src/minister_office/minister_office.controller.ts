@@ -17,7 +17,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 export class MinistryOfficeController {
   constructor(private readonly ministryOfficeService: MinistryOfficeService) {}
 
-  @Post()
+  @Post('register')
   async createMinisterUser(
     @Body() createMinistryOfficeDto: CreateMinistryOfficeDto,
     @Res() res: FastifyReply,
@@ -48,7 +48,7 @@ export class MinistryOfficeController {
   async getAllNotesByCivilID(
     @Param('civilId') civilId: string,
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 2,
+    @Query('limit') limit: number = 10,
     @Res() res: FastifyReply) {
     try {
       const {currentpage,totalpages,
@@ -82,7 +82,7 @@ export class MinistryOfficeController {
 @Get('find_all')
 async getAllNotes(
   @Query('page') page: number = 1,
-  @Query('limit') limit: number = 5,
+  @Query('limit') limit: number = 10,
   @Res() res: FastifyReply) {
     try {
       const {currentpage,totalpages,
