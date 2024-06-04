@@ -25,7 +25,7 @@ export class MinistryOfficeService {
     return await this.ownerDetailsModel.findOneAndUpdate(
       { OwnerCivilIdNumber: ownerCivilIdNumber },
       { $push: { Relations: updateRelationDto } },
-      { new: true, useFindAndModify: false }
+      { new: true, useFindAndModify: false , select: '-_id -__v -createdAt -updatedAt'}
     ).exec();
   }
 
@@ -35,7 +35,7 @@ export class MinistryOfficeService {
    return await this.ownerDetailsModel.findOneAndUpdate(
       { OwnerCivilIdNumber: ownerCivilIdNumber },
       { $set: updateFields },
-      { new: true, useFindAndModify: false }
+      { new: true, useFindAndModify: false ,select: '-_id -__v -createdAt -updatedAt'}
     ).exec();
   }
   
@@ -53,12 +53,9 @@ export class MinistryOfficeService {
           //"Relations.$.RelatedWithOwner": updateRelationDto.RelatedWithOwner,
         },
       },
-      { new: true, useFindAndModify: false }
+      { new: true, useFindAndModify: false ,select: '-_id -__v -createdAt -updatedAt'}
     ).exec();
-
-    if (!updatedOwnerDetails) {
-      throw new Error('Owner details not found');
-    }
+    console.log(updatedOwnerDetails)
     return updatedOwnerDetails;
   }
   

@@ -46,29 +46,70 @@ export class MinistryOfficeController {
   }
 
 @Post('AddRelatons/:ownerCivilIdNumber')
-  addRelation(
+ async addRelation(
     @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
     @Body() updateRelationDto: OwnerRelationsDTO,
+    @Res() res: FastifyReply
 ) {
-       return this.ministryOfficeService.addRelation(ownerCivilIdNumber, updateRelationDto);
-  }
+    await this.ministryOfficeService.addRelation(ownerCivilIdNumber, updateRelationDto).then(val => {
+       if (val === null) {
+         return  res.send({
+          status: HttpStatus.NOT_FOUND,
+           data: val,
+           message:"we can not add relation note for civilId because this is not use before" + ownerCivilIdNumber
+        })
+       }
+       return res.send({
+         status: HttpStatus.OK,
+         data:val
+        })
+    })
+
+}
 
   @Put('UpdateOwnerRelation/:ownerCivilIdNumber/:relatedId')
-    updateOwnerRelations(
+   async updateOwnerRelations(
       @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
        @Param('relatedId') relatedId: string,
-    @Body() ownerRelationDto: OwnerRelationsDTO,
+      @Body() ownerRelationDto: OwnerRelationsDTO,
+      @Res() res: FastifyReply
   ) {
-
-    return this.ministryOfficeService.updateRelation(ownerCivilIdNumber, relatedId,ownerRelationDto);
+    await this.ministryOfficeService.updateRelation(ownerCivilIdNumber, relatedId, ownerRelationDto).then((val => {
+      if (val === null) {
+      console.log('ownwer details not avalable')
+      return res.send({
+          status: HttpStatus.NOT_FOUND,
+           data: val,
+           message:"owner detaits are not avaliable " + ownerCivilIdNumber
+        })
+      }
+      return res.send({
+         status: HttpStatus.OK,
+         data:val
+        })
+    }))
   }
 
   @Put('UpdateOwner/:ownerCivilIdNumber')
-  updateOwner(
+  async updateOwner(
     @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
     @Body() updateUserDto: OwnerDetailsDTO,
+    @Res() res: FastifyReply
   ) {
-    return this.ministryOfficeService.updateOwner(ownerCivilIdNumber, updateUserDto);
+    await this.ministryOfficeService.updateOwner(ownerCivilIdNumber, updateUserDto).then((val)=>{
+       if (val === null) {
+      console.log('ownwer details not avalable')
+      return res.send({
+          status: HttpStatus.NOT_FOUND,
+           data: val,
+           message:"owner detaits are not avaliable " + ownerCivilIdNumber
+        })
+      }
+      return res.send({
+         status: HttpStatus.OK,
+         data:val
+        })
+    })
   }
 
   @Get('FindAll/:civilId')
