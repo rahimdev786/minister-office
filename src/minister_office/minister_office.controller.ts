@@ -13,7 +13,7 @@ import { CreateMinistryOfficeDto } from './dto/create-minister_office.dto';
 import { MinistryOffice } from 'src/schemas/minister_office.schema';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-@Controller('minister_office')
+@Controller('minister-office')
 export class MinistryOfficeController {
   constructor(private readonly ministryOfficeService: MinistryOfficeService) {}
 
@@ -44,7 +44,7 @@ export class MinistryOfficeController {
     }
   }
 
-  @Get('find_all/:civilId')
+  @Get('findall/:civilId')
   async getAllNotesByCivilID(
     @Param('civilId') civilId: string,
     @Query('page') page: number = 1,
@@ -79,7 +79,7 @@ export class MinistryOfficeController {
     }
   }
 
-@Get('find_all')
+@Get('findall')
 async getAllNotes(
   @Query('page') page: number = 1,
   @Query('limit') limit: number = 10,

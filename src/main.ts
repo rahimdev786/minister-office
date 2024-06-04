@@ -4,7 +4,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { debugLevel, HOST, PORT } from './config';
+import { debugLevel } from './config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
@@ -15,9 +15,9 @@ async function bootstrap() {
   );
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(PORT, HOST, () => {
+  await app.listen(process.env.PORT, process.env.HOST, () => {
     Logger.debug(
-      `Server listening at http://${HOST}:${PORT}/`,
+      `Server listening at http://${process.env.HOST}:${process.env.PORT}/`,
       'minister_office',
     );
   });

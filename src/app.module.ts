@@ -2,19 +2,25 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MinistryOfficeModule } from './minister_office/minister_office.module';
-import { MONGODB_URI } from './config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(MONGODB_URI),
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+     ConfigModule.forRoot({
+      isGlobal:true
+     }),
+    MongooseModule.forRoot(process.env.DATABASE),
     MinistryOfficeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+
+    console.log(process.env.DATABASE)
+    console.log(process.env.HOST)
+    console.log(process.env.PORT)
+  }
+}
