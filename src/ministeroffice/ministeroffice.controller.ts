@@ -79,7 +79,7 @@ export class MinistryOfficeController {
     @Res() res: FastifyReply) {
     try {
       const {currentpage,totalpages,
-        totalItems, data } = await this.ministryOfficeService.findbyNoteCivilId(civilId,page, limit);
+        totalItems, data } = await this.ministryOfficeService.findbyNoteCivilId(civilId, page, limit);
       if (currentpage > totalpages) {
         return res.send({
           data:data,

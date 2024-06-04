@@ -38,35 +38,30 @@ export class MinistryOfficeService {
       { new: true, useFindAndModify: false }
     ).exec();
   }
-
-async updateRelation(
-    ownerId: string,
-    relatedId: string,
-    updateData: Partial<OwnerRelationsDTO>,
-  ): Promise<OwnerDetails | null> {
-    return await this.ownerDetailsModel.findByIdAndUpdate(
-      ownerId,
+  
+  async updateRelation(ownerCivilIdNumber: string, relatedCivilIdNumber: string, updateRelationDto: OwnerRelationsDTO): Promise<OwnerDetails> {
+    const updatedOwnerDetails = await this.ownerDetailsModel.findOneAndUpdate(
+      { 
+        OwnerCivilIdNumber: ownerCivilIdNumber,
+        "Relations.RelatedCivilIdNumber": relatedCivilIdNumber 
+      },
       {
         $set: {
-          Relations: {
-            $map: {
-              input: '$Relations',
-              as: 'relation',
-              in: {
-                $cond: [
-                  { $and: [{ 'relation.OwnerCivilIdNumber': ownerId }, { 'relation.RelatedCivilIdNumber': relatedId }] },
-                  { $mergeObjects: ['$$relation', updateData] },
-                  '$$relation',
-                ],
-              },
-            },
-          },
+          //"Relations.$.OwnerCivilIdNumber": updateRelationDto.OwnerCivilIdNumber,
+          "Relations.$.Notes": updateRelationDto.Notes,
+          //"Relations.$.RelatedCivilIdNumber": updateRelationDto.RelatedCivilIdNumber,
+          //"Relations.$.RelatedWithOwner": updateRelationDto.RelatedWithOwner,
         },
       },
-      { new: true }, // Return the updated document
-    );
-  }
+      { new: true, useFindAndModify: false }
+    ).exec();
 
+    if (!updatedOwnerDetails) {
+      throw new Error('Owner details not found');
+    }
+    return updatedOwnerDetails;
+  }
+  
 async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
     data: OwnerDetails[],
     totalItems: number,
@@ -74,13 +69,14 @@ async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
     totalpages:number
   }> {
     const totalCount = await this.ownerDetailsModel.countDocuments({
-      civilIdNumber:civilId
+      OwnerCivilIdNumber:civilId
     });
     
+  console.log("totalCount", totalCount)
     const totalPages = Math.ceil(totalCount / limit);
     const results = await this.ownerDetailsModel
-        .find({ civilIdNumber: civilId })
-        .select('-_id -__v')
+        .find({ OwnerCivilIdNumber: civilId })
+        .select('-_id -__v -createdAt -updatedAt')
         .skip((page - 1) * limit)
         .limit(limit)
         .lean()
@@ -103,7 +99,7 @@ async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
     const totalPages = Math.ceil(totalCount / limit);
     const results = await this.ownerDetailsModel
         .find()
-        .select('-_id -__v')
+        .select('-_id -__v -createdAt -updatedAt')
         .skip((page - 1) * limit)
         .limit(limit)
         .lean()
@@ -115,5 +111,4 @@ async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
       data: results,
     };
 }
-
 }
