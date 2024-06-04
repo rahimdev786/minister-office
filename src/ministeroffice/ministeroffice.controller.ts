@@ -45,28 +45,33 @@ export class MinistryOfficeController {
     }
   }
 
-
-
-@Post(':ownerCivilIdNumber/addRelation')
+@Post('AddRelatons/:ownerCivilIdNumber')
   addRelation(
     @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
     @Body() updateRelationDto: OwnerRelationsDTO,
 ) {
-  
-  console.log(ownerCivilIdNumber)
        return this.ministryOfficeService.addRelation(ownerCivilIdNumber, updateRelationDto);
   }
 
+  @Put('UpdateOwnerRelation/:ownerCivilIdNumber/:relatedId')
+    updateOwnerRelations(
+      @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
+       @Param('relatedId') relatedId: string,
+    @Body() ownerRelationDto: OwnerRelationsDTO,
+  ) {
 
-  @Put(':ownerCivilIdNumber')
-  updateUser(
+    return this.ministryOfficeService.updateRelation(ownerCivilIdNumber, relatedId,ownerRelationDto);
+  }
+
+  @Put('UpdateOwner/:ownerCivilIdNumber')
+  updateOwner(
     @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
     @Body() updateUserDto: OwnerDetailsDTO,
   ) {
     return this.ministryOfficeService.updateOwner(ownerCivilIdNumber, updateUserDto);
   }
 
-  @Get('Findall/:civilId')
+  @Get('FindAll/:civilId')
   async getAllNotesByCivilID(
     @Param('civilId') civilId: string,
     @Query('page') page: number = 1,
@@ -101,7 +106,7 @@ export class MinistryOfficeController {
     }
   }
 
-@Get('Findall')
+@Get('FindAll')
 async getAllNotes(
   @Query('page') page: number = 1,
   @Query('limit') limit: number = 10,

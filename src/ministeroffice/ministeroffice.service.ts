@@ -39,8 +39,34 @@ export class MinistryOfficeService {
     ).exec();
   }
 
+async updateRelation(
+    ownerId: string,
+    relatedId: string,
+    updateData: Partial<OwnerRelationsDTO>,
+  ): Promise<OwnerDetails | null> {
+    return await this.ownerDetailsModel.findByIdAndUpdate(
+      ownerId,
+      {
+        $set: {
+          Relations: {
+            $map: {
+              input: '$Relations',
+              as: 'relation',
+              in: {
+                $cond: [
+                  { $and: [{ 'relation.OwnerCivilIdNumber': ownerId }, { 'relation.RelatedCivilIdNumber': relatedId }] },
+                  { $mergeObjects: ['$$relation', updateData] },
+                  '$$relation',
+                ],
+              },
+            },
+          },
+        },
+      },
+      { new: true }, // Return the updated document
+    );
+  }
 
-  
 async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
     data: OwnerDetails[],
     totalItems: number,

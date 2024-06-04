@@ -36,7 +36,7 @@ export class OwnerDetailsDTO {
   @IsNotEmpty()
   OwnerFullName: string;
 
-   @IsString()
+  @IsString()
   @IsNotEmpty()
   OwnerOccupation: string;
 
