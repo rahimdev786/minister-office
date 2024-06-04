@@ -20,6 +20,9 @@ export class OwnerDetails extends Document {
   @Prop({ required: true })
   OwnerFullName: string;
 
+  @Prop({ required: true })
+  OwnerOccupation: string;
+
   @Prop({ type: [{ type: Object, ref: 'OwnerRelations' }] })
   @Type(() => OwnerRelations)
   Relations: OwnerRelations[];

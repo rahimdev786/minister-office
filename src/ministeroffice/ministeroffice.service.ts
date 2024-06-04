@@ -29,6 +29,18 @@ export class MinistryOfficeService {
     ).exec();
   }
 
+
+  async updateOwner(ownerCivilIdNumber: string, updateUserDto: OwnerDetailsDTO): Promise<OwnerDetails> {
+    const { OwnerCivilIdNumber, Relations, ...updateFields } = updateUserDto;
+   return await this.ownerDetailsModel.findOneAndUpdate(
+      { OwnerCivilIdNumber: ownerCivilIdNumber },
+      { $set: updateFields },
+      { new: true, useFindAndModify: false }
+    ).exec();
+  }
+
+
+  
 async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
     data: OwnerDetails[],
     totalItems: number,

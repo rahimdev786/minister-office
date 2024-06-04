@@ -36,6 +36,11 @@ export class OwnerDetailsDTO {
   @IsNotEmpty()
   OwnerFullName: string;
 
+   @IsString()
+  @IsNotEmpty()
+  OwnerOccupation: string;
+
+
   @ValidateNested({ each: true })
   @Type(() => OwnerRelationsDTO)
   Relations: OwnerRelationsDTO[];

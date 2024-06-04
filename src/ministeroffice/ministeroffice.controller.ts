@@ -6,7 +6,8 @@ import {
   Param,
   Res,
   HttpStatus,
-  Query
+  Query,
+  Put
 } from '@nestjs/common';
 import { MinistryOfficeService } from './ministeroffice.service';
 import { OwnerDetailsDTO, OwnerRelationsDTO } from './dto/createMinisteroffice.dto';
@@ -56,6 +57,14 @@ export class MinistryOfficeController {
        return this.ministryOfficeService.addRelation(ownerCivilIdNumber, updateRelationDto);
   }
 
+
+  @Put(':ownerCivilIdNumber')
+  updateUser(
+    @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
+    @Body() updateUserDto: OwnerDetailsDTO,
+  ) {
+    return this.ministryOfficeService.updateOwner(ownerCivilIdNumber, updateUserDto);
+  }
 
   @Get('Findall/:civilId')
   async getAllNotesByCivilID(
