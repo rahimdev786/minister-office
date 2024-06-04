@@ -10,7 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
      ConfigModule.forRoot({
       isGlobal:true
      }),
-    MongooseModule.forRoot(process.env.DATABASE),
+    MongooseModule.forRoot('mongodb://localhost:27017/minster_office'),
     MinistryOfficeModule,
   ],
   controllers: [AppController],

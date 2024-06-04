@@ -69,15 +69,15 @@ export class MinistryOfficeService {
   async getOwnerDetails(ownerCivilIdNumber: string): Promise<any> {
     try {
       // Fetch data from both models
-      const ownerRelations = await this.ownerRelationsModel.find({ OwnerCivilIdNumber: ownerCivilIdNumber }).exec();
-      const ownerDetails = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).exec();
-  
+      const ownerRelations = await this.ownerRelationsModel.find({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
+      const ownerDetails = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
+
       // Combine the results
       const combinedResult = {
         ownerRelations,
         ownerDetails,
       };
-  
+
       return combinedResult;
     } catch (error) {
       console.error("Error fetching owner details:", error);
@@ -90,14 +90,14 @@ export class MinistryOfficeService {
     try {
       // Delete owner details
       const ownerDetailsDeletion = await this.ownerDetailsModel.deleteOne({ OwnerCivilIdNumber: ownerCivilIdNumber });
-  
+
       if (ownerDetailsDeletion.deletedCount === 0) {
         return false; // Owner details not found
       }
-  
+
       // Delete related relations
       await this.ownerRelationsModel.deleteMany({ OwnerCivilIdNumber: ownerCivilIdNumber });
-  
+
       return true;
     } catch (error) {
       console.error("Error deleting owner details:", error);
@@ -112,100 +112,16 @@ export class MinistryOfficeService {
         OwnerCivilIdNumber: ownerCivilIdNumber,
         RelatedCivilIdNumber: relationCivilIdNumber,
       });
-  
+
       if (relationDeletion.deletedCount === 0) {
         return false; // Relation not found
       }
-  
+
       return true;
     } catch (error) {
       console.error("Error deleting relation:", error);
       throw error;
     }
-  }
-  
-  
-  
-
-
-
-
-
-  async saveOwnerDetails(
-    ownerData: OwnerDetailsDTO,
-  ): Promise<OwnerDetails> {
-    console.log(ownerData)
-    const createdMinistryOffice = new this.ownerDetailsModel(ownerData).save()
-    return await createdMinistryOffice
-  }
-
-  async addRelation(ownerCivilIdNumber: string, updateRelationDto: OwnerRelationsDTO): Promise<OwnerDetails> {
-    return await this.ownerDetailsModel.findOneAndUpdate(
-      { OwnerCivilIdNumber: ownerCivilIdNumber },
-      { $push: { Relations: updateRelationDto } },
-      { new: true, useFindAndModify: false }
-    ).exec();
-  }
-
-
-  async updateOwner(ownerCivilIdNumber: string, updateUserDto: OwnerDetailsDTO): Promise<OwnerDetails> {
-    const { OwnerCivilIdNumber, Relations, ...updateFields } = updateUserDto;
-    return await this.ownerDetailsModel.findOneAndUpdate(
-      { OwnerCivilIdNumber: ownerCivilIdNumber },
-      { $set: updateFields },
-      { new: true, useFindAndModify: false }
-    ).exec();
-  }
-
-
-
-  async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
-    data: OwnerDetails[],
-    totalItems: number,
-    currentpage: number,
-    totalpages: number
-  }> {
-    const totalCount = await this.ownerDetailsModel.countDocuments({
-      civilIdNumber: civilId
-    });
-
-    const totalPages = Math.ceil(totalCount / limit);
-    const results = await this.ownerDetailsModel
-      .find({ civilIdNumber: civilId })
-      .select('-_id -__v')
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean()
-      .exec();
-    return {
-      currentpage: page,
-      totalpages: totalPages,
-      totalItems: totalCount,
-      data: results,
-    };
-  }
-
-  async findbyAllNotes(page: number, limit: number): Promise<{
-    data: OwnerDetails[],
-    totalItems: number,
-    currentpage: number,
-    totalpages: number
-  }> {
-    const totalCount = await this.ownerDetailsModel.countDocuments();
-    const totalPages = Math.ceil(totalCount / limit);
-    const results = await this.ownerDetailsModel
-      .find()
-      .select('-_id -__v')
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean()
-      .exec();
-    return {
-      currentpage: page,
-      totalpages: totalPages,
-      totalItems: totalCount,
-      data: results,
-    };
   }
 
 }

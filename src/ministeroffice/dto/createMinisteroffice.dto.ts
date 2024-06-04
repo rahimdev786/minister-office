@@ -20,7 +20,7 @@ export class OwnerDetailsDTO {
   UserName: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   UserId?: string;
 
   @IsNumberString()
