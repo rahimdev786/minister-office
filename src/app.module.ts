@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MinistryOfficeModule } from './minister_office/minister_office.module';
+import { MinistryOfficeModule } from './ministeroffice/ministeroffice.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 

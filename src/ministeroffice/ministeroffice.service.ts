@@ -1,47 +1,50 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMinistryOfficeDto } from './dto/create-minister_office.dto';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { OwnerDetailsDTO, OwnerRelationsDTO } from './dto/createMinisteroffice.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { MinistryOffice } from 'src/schemas/minister_office.schema';
+import { OwnerDetails, OwnerRelations } from 'src/schemas/ministeroffice.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class MinistryOfficeService {
   constructor(
-    @InjectModel(MinistryOffice.name)
-    private ministryOfficeModel: Model<MinistryOffice>,
+    @InjectModel(OwnerDetails.name)
+    private ownerDetailsModel: Model<OwnerDetails>,
+     @InjectModel(OwnerRelations.name)
+    private ownerRelationsModel: Model<OwnerRelations>,
   ) {}
 
-  async createMinisterUser(
-    createMinistryOfficeDto: CreateMinistryOfficeDto,
-  ): Promise<MinistryOffice> {
-    //const { civilIdNumber } = createMinistryOfficeDto;
-    // const existingUser = await this.ministryOfficeModel
-    //   .findOne({ civilIdNumber })
+  async saveOwnerDetails(
+    ownerData: OwnerDetailsDTO,
+  ): Promise<OwnerDetails> {
+    // const existingUser = await this.ownerDetailsModel
+    //   .findOne({ OwnerCivilIdNumber:ownerData.OwnerCivilIdNumber})
     //   .exec();
+    
     // if (existingUser) {
     //   throw new ConflictException(
-    //     `Ministry Office with civilIdNumber ${civilIdNumber} already exists`,
+    //     `Ministry Office with civilIdNumber ${ownerData.OwnerCivilIdNumber} already exists`,
     //   );
     // }
-    const createdMinistryOffice = await new this.ministryOfficeModel(
-      createMinistryOfficeDto,
+
+    console.log(ownerData)
+    const createdMinistryOffice = await new this.ownerDetailsModel(
+      ownerData,
     );
     return createdMinistryOffice.save();
   }
 
- 
   async findbyNoteCivilId(civilId: string, page: number, limit: number): Promise<{
-    data: MinistryOffice[],
+    data: OwnerDetails[],
     totalItems: number,
     currentpage: number,
     totalpages:number
   }> {
-    const totalCount = await this.ministryOfficeModel.countDocuments({
+    const totalCount = await this.ownerDetailsModel.countDocuments({
       civilIdNumber:civilId
     });
     
     const totalPages = Math.ceil(totalCount / limit);
-    const results = await this.ministryOfficeModel
+    const results = await this.ownerDetailsModel
         .find({ civilIdNumber: civilId })
         .select('-_id -__v')
         .skip((page - 1) * limit)
@@ -57,14 +60,14 @@ export class MinistryOfficeService {
 }
  
   async findbyAllNotes(page: number, limit: number): Promise<{
-    data: MinistryOffice[],
+    data: OwnerDetails[],
     totalItems: number,
     currentpage: number,
     totalpages:number
   }> {
-    const totalCount = await this.ministryOfficeModel.countDocuments();
+    const totalCount = await this.ownerDetailsModel.countDocuments();
     const totalPages = Math.ceil(totalCount / limit);
-    const results = await this.ministryOfficeModel
+    const results = await this.ownerDetailsModel
         .find()
         .select('-_id -__v')
         .skip((page - 1) * limit)

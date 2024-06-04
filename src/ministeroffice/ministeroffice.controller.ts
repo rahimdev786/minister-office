@@ -8,22 +8,22 @@ import {
   HttpStatus,
   Query
 } from '@nestjs/common';
-import { MinistryOfficeService } from './minister_office.service';
-import { CreateMinistryOfficeDto } from './dto/create-minister_office.dto';
-import { MinistryOffice } from 'src/schemas/minister_office.schema';
+import { MinistryOfficeService } from './ministeroffice.service';
+import { OwnerDetailsDTO, OwnerRelationsDTO } from './dto/createMinisteroffice.dto';
+import { OwnerDetails } from 'src/schemas/ministeroffice.schema';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-@Controller('minister-office')
+@Controller('MinisterOffice')
 export class MinistryOfficeController {
   constructor(private readonly ministryOfficeService: MinistryOfficeService) {}
 
-  @Post('register')
+  @Post('Register')
   async createMinisterUser(
-    @Body() createMinistryOfficeDto: CreateMinistryOfficeDto,
+    @Body() createMinistryOfficeDto: OwnerDetailsDTO,
     @Res() res: FastifyReply,
-  ): Promise<MinistryOffice> {
+  ): Promise<OwnerDetails> {
     try {
-      const record = this.ministryOfficeService.createMinisterUser(
+      const record = this.ministryOfficeService.saveOwnerDetails(
         createMinistryOfficeDto,
       );
       if (!record) {
@@ -44,7 +44,7 @@ export class MinistryOfficeController {
     }
   }
 
-  @Get('findall/:civilId')
+  @Get('Findall/:civilId')
   async getAllNotesByCivilID(
     @Param('civilId') civilId: string,
     @Query('page') page: number = 1,
@@ -79,7 +79,7 @@ export class MinistryOfficeController {
     }
   }
 
-@Get('findall')
+@Get('Findall')
 async getAllNotes(
   @Query('page') page: number = 1,
   @Query('limit') limit: number = 10,
