@@ -68,15 +68,64 @@ export class MinistryOfficeService {
 
   async getOwnerDetails(ownerCivilIdNumber: string): Promise<any> {
     try {
-        const ownerRelations = await this.ownerRelationsModel.find({ OwnerCivilIdNumber: ownerCivilIdNumber }).exec();
-        //const ownerDetails = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).exec();
-
-        return {  ownerRelations };
+      // Fetch data from both models
+      const ownerRelations = await this.ownerRelationsModel.find({ OwnerCivilIdNumber: ownerCivilIdNumber }).exec();
+      const ownerDetails = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).exec();
+  
+      // Combine the results
+      const combinedResult = {
+        ownerRelations,
+        ownerDetails,
+      };
+  
+      return combinedResult;
     } catch (error) {
-        console.error("Error fetching owner details:", error);
-        throw error;
+      console.error("Error fetching owner details:", error);
+      throw error;
     }
-}
+  }
+
+
+  async deleteOwnerDetails(ownerCivilIdNumber: string): Promise<boolean> {
+    try {
+      // Delete owner details
+      const ownerDetailsDeletion = await this.ownerDetailsModel.deleteOne({ OwnerCivilIdNumber: ownerCivilIdNumber });
+  
+      if (ownerDetailsDeletion.deletedCount === 0) {
+        return false; // Owner details not found
+      }
+  
+      // Delete related relations
+      await this.ownerRelationsModel.deleteMany({ OwnerCivilIdNumber: ownerCivilIdNumber });
+  
+      return true;
+    } catch (error) {
+      console.error("Error deleting owner details:", error);
+      throw error;
+    }
+  }
+
+
+  async deleteRelation(ownerCivilIdNumber: string, relationCivilIdNumber: string): Promise<boolean> {
+    try {
+      const relationDeletion = await this.ownerRelationsModel.deleteOne({
+        OwnerCivilIdNumber: ownerCivilIdNumber,
+        RelatedCivilIdNumber: relationCivilIdNumber,
+      });
+  
+      if (relationDeletion.deletedCount === 0) {
+        return false; // Relation not found
+      }
+  
+      return true;
+    } catch (error) {
+      console.error("Error deleting relation:", error);
+      throw error;
+    }
+  }
+  
+  
+  
 
 
 
