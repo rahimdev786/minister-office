@@ -41,6 +41,7 @@ export class MinistryOfficeService {
           if (existingRelation) {
             existingRelation.Notes = newRelation.Notes;
             existingRelation.isActive = newRelation.isActive;
+            existingRelation.RelatedFullName = newRelation.RelatedFullName;
             await existingRelation.save();
           } else {
             const relationDoc = new this.ownerRelationsModel({

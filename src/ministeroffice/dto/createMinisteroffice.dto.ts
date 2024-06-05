@@ -73,6 +73,10 @@ export class OwnerRelationsDTO {
   @IsBoolean()
   @IsNotEmpty()
   isActive: boolean;
+  
+  @IsString()
+  @IsOptional()
+  RelatedFullName 
 }
 
 

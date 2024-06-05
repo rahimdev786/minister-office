@@ -47,6 +47,9 @@ export class OwnerRelations extends Document {
    RelatedWithOwner: string
 
    @Prop()
+   RelatedFullName:string
+
+   @Prop()
   isActive: boolean;
 }
 
