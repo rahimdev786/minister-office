@@ -1,19 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Res,
-  HttpStatus,
-  Query,
-  Put,
-  Delete
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Res, HttpStatus, Delete } from '@nestjs/common';
 import { MinistryOfficeService } from './ministeroffice.service';
-import { OwnerDetailsDTO, OwnerRelationsDTO } from './dto/createMinisteroffice.dto';
+import { OwnerDetailsDTO } from './dto/createMinisteroffice.dto';
 import { OwnerDetails } from 'src/schemas/ministeroffice.schema';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply } from 'fastify';
 
 @Controller('MinisterOffice')
 export class MinistryOfficeController {

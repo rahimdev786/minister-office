@@ -19,7 +19,8 @@ export class MinistryOfficeService {
 
     if (!existingOwnerDetails) {
       // If OwnerDetails do not exist, create new OwnerDetails
-      existingOwnerDetails = new this.ownerDetailsModel(ownerData);
+      const { Relations, ...ownerDetailsData } = ownerData;
+      existingOwnerDetails = new this.ownerDetailsModel(ownerDetailsData);
       await existingOwnerDetails.save();
 
       // Save the relations if they exist in the DTO
@@ -31,9 +32,11 @@ export class MinistryOfficeService {
         await this.ownerRelationsModel.insertMany(relationDocs);
       }
     } else {
+
       existingOwnerDetails.Notes = ownerData.Notes;
       existingOwnerDetails.OwnerFullName = ownerData.OwnerFullName;
       existingOwnerDetails.OwnerOccupation = ownerData.OwnerOccupation;
+      existingOwnerDetails.isActive = ownerData.isActive;
       // If OwnerDetails exist, check and update the relations
       if (ownerData.Relations && ownerData.Relations.length > 0) {
         for (const newRelation of ownerData.Relations) {
@@ -45,6 +48,7 @@ export class MinistryOfficeService {
           if (existingRelation) {
             // Update the existing relation
             existingRelation.Notes = newRelation.Notes;
+            existingRelation.isActive = newRelation.isActive;
             await existingRelation.save();
           } else {
             // Add new relation
@@ -59,8 +63,8 @@ export class MinistryOfficeService {
           }
         }
 
-        await existingOwnerDetails.save();
       }
+      await existingOwnerDetails.save();
     }
 
     return existingOwnerDetails;
@@ -70,15 +74,15 @@ export class MinistryOfficeService {
     try {
       // Fetch data from both models
       const ownerRelations = await this.ownerRelationsModel.find({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
-      const ownerDetails = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
+      const {Relations,...ownerDetails} = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
 
       // Combine the results
-      const combinedResult = {
-        ownerRelations,
-        ownerDetails,
-      };
-
-      return combinedResult;
+     
+      
+    return {
+      ownerDetails,
+      ownerRelations,
+    };
     } catch (error) {
       console.error("Error fetching owner details:", error);
       throw error;

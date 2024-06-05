@@ -5,23 +5,26 @@ import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class OwnerDetails extends Document {
-  @Prop({ required: true })
+  @Prop()
   UserId: string;
 
-  @Prop({ required: true })
+  @Prop()
   UserName: string;
 
-  @Prop({ required: true })
+  @Prop()
   OwnerCivilIdNumber: string;
 
-  @Prop({ required: true })
+  @Prop()
   Notes: string;
 
-  @Prop({ required: true })
+  @Prop()
   OwnerFullName: string;
 
-  @Prop({ required: true })
+  @Prop()
   OwnerOccupation: string;
+
+  @Prop()
+  isActive: boolean;
 
   @Prop({ type: [{ type: Object, ref: 'OwnerRelations' }] })
   @Type(() => OwnerRelations)
@@ -31,17 +34,20 @@ export class OwnerDetails extends Document {
 
 @Schema({ timestamps: true })
 export class OwnerRelations extends Document {
-  @Prop({ required: true })
+  @Prop()
   OwnerCivilIdNumber: string
   
-  @Prop({ required: true })
+  @Prop()
   Notes: string;
 
-   @Prop({ required: true })
+   @Prop()
    RelatedCivilIdNumber: string
 
-   @Prop({ required: true })
+   @Prop()
    RelatedWithOwner: string
+
+   @Prop()
+  isActive: boolean;
 }
 
 export const OwnerDetailsSchema =

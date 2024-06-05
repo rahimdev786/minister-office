@@ -2,6 +2,7 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsNumberString,
@@ -16,11 +17,11 @@ import { OwnerRelations } from 'src/schemas/ministeroffice.schema';
 
 export class OwnerDetailsDTO {
   @IsString()
-  @IsNotEmpty()
-  UserName: string;
+  @IsOptional()
+  UserName?: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   UserId?: string;
 
   @IsNumberString()
@@ -29,18 +30,22 @@ export class OwnerDetailsDTO {
   OwnerCivilIdNumber: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   Notes: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   OwnerFullName: string;
 
    @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   OwnerOccupation: string;
 
+  @IsBoolean()
+  @IsNotEmpty()
+  isActive: boolean;
 
+  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => OwnerRelationsDTO)
   Relations: OwnerRelationsDTO[];
@@ -53,6 +58,7 @@ export class OwnerRelationsDTO {
   OwnerCivilIdNumber: string;
 
   @IsString()
+  @IsOptional()
   Notes: string;
 
   @IsNumberString()
@@ -61,7 +67,12 @@ export class OwnerRelationsDTO {
   RelatedCivilIdNumber: string;
 
   @IsString()
+  @IsNotEmpty()
   RelatedWithOwner: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isActive: boolean;
 }
 
 
