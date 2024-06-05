@@ -15,7 +15,7 @@ async function bootstrap() {
   );
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen('4000', 'localhost', () => {
+  await app.listen(process.env.PORT, process.env.HOST, () => {
     Logger.debug(
       `Server listening at http://${process.env.HOST}:${process.env.PORT}/`,
       'minister_office',

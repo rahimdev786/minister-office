@@ -7,20 +7,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-     ConfigModule.forRoot({
-      isGlobal:true
-     }),
-    MongooseModule.forRoot('mongodb://localhost:27017/minster_office'),
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    MongooseModule.forRoot('mongodb://localhost:27017/ministryOffice'),
     MinistryOfficeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
-  constructor() {
-
-    console.log(process.env.DATABASE)
-    console.log(process.env.HOST)
-    console.log(process.env.PORT)
-  }
+  constructor() { }
 }
