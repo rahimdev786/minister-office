@@ -43,7 +43,7 @@ export class OwnerDetailsDTO {
 
   @IsBoolean()
   @IsNotEmpty()
-  isActive: boolean;
+  IsActive: boolean;
 
   @IsOptional()
   @ValidateNested({ each: true })
@@ -72,11 +72,11 @@ export class OwnerRelationsDTO {
 
   @IsBoolean()
   @IsNotEmpty()
-  isActive: boolean;
+  IsActive: boolean;
   
   @IsString()
   @IsOptional()
-  RelatedFullName 
+  RelatedFullName :string
 }
 
 

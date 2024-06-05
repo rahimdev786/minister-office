@@ -24,7 +24,7 @@ export class OwnerDetails extends Document {
   OwnerOccupation: string;
 
   @Prop()
-  isActive: boolean;
+  IsActive: boolean;
 
   @Prop({ type: [{ type: Object, ref: 'OwnerRelations' }] })
   @Type(() => OwnerRelations)
@@ -50,7 +50,7 @@ export class OwnerRelations extends Document {
    RelatedFullName:string
 
    @Prop()
-  isActive: boolean;
+  IsActive: boolean;
 }
 
 export const OwnerDetailsSchema =
