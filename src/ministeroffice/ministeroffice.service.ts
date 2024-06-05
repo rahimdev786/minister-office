@@ -16,13 +16,11 @@ export class MinistryOfficeService {
   async saveOwnerDetails2(ownerData: OwnerDetailsDTO): Promise<OwnerDetails> {
     // Check if the OwnerDetails already exist
     let existingOwnerDetails = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerData.OwnerCivilIdNumber });
-
     if (!existingOwnerDetails) {
       // If OwnerDetails do not exist, create new OwnerDetails
       const { Relations, ...ownerDetailsData } = ownerData;
       existingOwnerDetails = new this.ownerDetailsModel(ownerDetailsData);
       await existingOwnerDetails.save();
-
       // Save the relations if they exist in the DTO
       if (ownerData.Relations && ownerData.Relations.length > 0) {
         const relationDocs = ownerData.Relations.map(relation => ({
@@ -32,11 +30,11 @@ export class MinistryOfficeService {
         await this.ownerRelationsModel.insertMany(relationDocs);
       }
     } else {
-
       existingOwnerDetails.Notes = ownerData.Notes;
       existingOwnerDetails.OwnerFullName = ownerData.OwnerFullName;
       existingOwnerDetails.OwnerOccupation = ownerData.OwnerOccupation;
       existingOwnerDetails.isActive = ownerData.isActive;
+      existingOwnerDetails.UserName = ownerData.UserName;
       // If OwnerDetails exist, check and update the relations
       if (ownerData.Relations && ownerData.Relations.length > 0) {
         for (const newRelation of ownerData.Relations) {
@@ -44,7 +42,6 @@ export class MinistryOfficeService {
             OwnerCivilIdNumber: ownerData.OwnerCivilIdNumber,
             RelatedCivilIdNumber: newRelation.RelatedCivilIdNumber,
           });
-
           if (existingRelation) {
             // Update the existing relation
             existingRelation.Notes = newRelation.Notes;
@@ -57,12 +54,10 @@ export class MinistryOfficeService {
               OwnerCivilIdNumber: ownerData.OwnerCivilIdNumber,
             });
             await relationDoc.save();
-
             // Update the relations reference in OwnerDetails
             // existingOwnerDetails.Relations.push(relationDoc._id);
           }
         }
-
       }
       await existingOwnerDetails.save();
     }
@@ -72,13 +67,12 @@ export class MinistryOfficeService {
 
   async getOwnerDetails(ownerCivilIdNumber: string): Promise<any> {
     try {
-      // Fetch data from both models
       const ownerRelations = await this.ownerRelationsModel.find({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
-      const {Relations,...ownerDetails} = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
-
-      // Combine the results
-     
-      
+      console.log("ownerRelations", ownerRelations)
+      if (ownerRelations.length === 0) {
+        return {}
+      }
+    const {Relations,...ownerDetails} = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
     return {
       ownerDetails,
       ownerRelations,
@@ -94,14 +88,11 @@ export class MinistryOfficeService {
     try {
       // Delete owner details
       const ownerDetailsDeletion = await this.ownerDetailsModel.deleteOne({ OwnerCivilIdNumber: ownerCivilIdNumber });
-
       if (ownerDetailsDeletion.deletedCount === 0) {
         return false; // Owner details not found
       }
-
       // Delete related relations
       await this.ownerRelationsModel.deleteMany({ OwnerCivilIdNumber: ownerCivilIdNumber });
-
       return true;
     } catch (error) {
       console.error("Error deleting owner details:", error);
@@ -116,16 +107,13 @@ export class MinistryOfficeService {
         OwnerCivilIdNumber: ownerCivilIdNumber,
         RelatedCivilIdNumber: relationCivilIdNumber,
       });
-
       if (relationDeletion.deletedCount === 0) {
         return false; // Relation not found
       }
-
       return true;
     } catch (error) {
       console.error("Error deleting relation:", error);
       throw error;
     }
   }
-
 }

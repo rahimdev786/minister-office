@@ -8,7 +8,7 @@ import { FastifyReply } from 'fastify';
 export class MinistryOfficeController {
   constructor(private readonly ministryOfficeService: MinistryOfficeService) { }
 
-  @Post('Register')
+  @Post('CreateNote')
   async createMinisterUser(
     @Body() createMinistryOfficeDto: OwnerDetailsDTO,
     @Res() res: FastifyReply,
@@ -35,8 +35,6 @@ export class MinistryOfficeController {
     }
   }
 
-
-
   @Get('getOwnerDetails/:ownerCivilIdNumber')
   async getOwnerDetails(
     @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
@@ -44,12 +42,17 @@ export class MinistryOfficeController {
   ): Promise<OwnerDetails> {
     try {
       const ownerDetails = await this.ministryOfficeService.getOwnerDetails(ownerCivilIdNumber);
+      console.log(ownerDetails)
       if (!ownerDetails) {
         return res.status(HttpStatus.NOT_FOUND).send({
           status: HttpStatus.NOT_FOUND,
           message: 'Owner details not found',
         });
       }
+       
+
+     
+
       return res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
         data: ownerDetails,
@@ -113,8 +116,4 @@ export class MinistryOfficeController {
       });
     }
   }
-
-
-
-
 }
