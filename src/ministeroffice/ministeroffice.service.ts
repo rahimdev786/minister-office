@@ -1,7 +1,13 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { OwnerDetailsDTO, OwnerRelationsDTO } from './dto/createMinisteroffice.dto';
+import {
+  OwnerDetailsDTO,
+  OwnerRelationsDTO,
+} from './dto/createMinisteroffice.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { OwnerDetails, OwnerRelations } from 'src/schemas/ministeroffice.schema';
+import {
+  OwnerDetails,
+  OwnerRelations,
+} from 'src/schemas/ministeroffice.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -11,16 +17,18 @@ export class MinistryOfficeService {
     private ownerDetailsModel: Model<OwnerDetails>,
     @InjectModel(OwnerRelations.name)
     private ownerRelationsModel: Model<OwnerRelations>,
-  ) { }
+  ) {}
 
   async saveOwnerDetails2(ownerData: OwnerDetailsDTO): Promise<OwnerDetails> {
-    let existingOwnerDetails = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerData.OwnerCivilIdNumber });
+    let existingOwnerDetails = await this.ownerDetailsModel.findOne({
+      OwnerCivilIdNumber: ownerData.OwnerCivilIdNumber,
+    });
     if (!existingOwnerDetails) {
       const { Relations, ...ownerDetailsData } = ownerData;
       existingOwnerDetails = new this.ownerDetailsModel(ownerDetailsData);
       await existingOwnerDetails.save();
       if (ownerData.Relations && ownerData.Relations.length > 0) {
-        const relationDocs = ownerData.Relations.map(relation => ({
+        const relationDocs = ownerData.Relations.map((relation) => ({
           ...relation,
           OwnerCivilIdNumber: ownerData.OwnerCivilIdNumber,
         }));
@@ -41,6 +49,8 @@ export class MinistryOfficeService {
           if (existingRelation) {
             existingRelation.Notes = newRelation.Notes;
             existingRelation.IsActive = newRelation.IsActive;
+            existingRelation.UserId = newRelation.UserId;
+            existingRelation.UserName = newRelation.UserName;
             await existingRelation.save();
           } else {
             const relationDoc = new this.ownerRelationsModel({
@@ -59,39 +69,52 @@ export class MinistryOfficeService {
 
   async getOwnerDetails(ownerCivilIdNumber: string): Promise<any> {
     try {
-      const ownerRelations = await this.ownerRelationsModel.find({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
-      console.log("ownerRelations", ownerRelations)
+      const ownerRelations = await this.ownerRelationsModel
+        .find({ OwnerCivilIdNumber: ownerCivilIdNumber })
+        .select('-_id -__v')
+        .lean()
+        .exec();
+      console.log('ownerRelations', ownerRelations);
       if (ownerRelations.length === 0) {
-        return {}
+        return {};
       }
-    const {Relations,...ownerDetails} = await this.ownerDetailsModel.findOne({ OwnerCivilIdNumber: ownerCivilIdNumber }).select('-_id -__v').lean().exec();
-    return {
-      ownerDetails,
-      ownerRelations,
-    };
+      const { Relations, ...ownerDetails } = await this.ownerDetailsModel
+        .findOne({ OwnerCivilIdNumber: ownerCivilIdNumber })
+        .select('-_id -__v')
+        .lean()
+        .exec();
+      return {
+        ownerDetails,
+        ownerRelations,
+      };
     } catch (error) {
-      console.error("Error fetching owner details:", error);
+      console.error('Error fetching owner details:', error);
       throw error;
     }
   }
-
 
   async deleteOwnerDetails(ownerCivilIdNumber: string): Promise<boolean> {
     try {
-      const ownerDetailsDeletion = await this.ownerDetailsModel.deleteOne({ OwnerCivilIdNumber: ownerCivilIdNumber });
+      const ownerDetailsDeletion = await this.ownerDetailsModel.deleteOne({
+        OwnerCivilIdNumber: ownerCivilIdNumber,
+      });
       if (ownerDetailsDeletion.deletedCount === 0) {
-        return false; 
+        return false;
       }
-      await this.ownerRelationsModel.deleteMany({ OwnerCivilIdNumber: ownerCivilIdNumber });
+      await this.ownerRelationsModel.deleteMany({
+        OwnerCivilIdNumber: ownerCivilIdNumber,
+      });
       return true;
     } catch (error) {
-      console.error("Error deleting owner details:", error);
+      console.error('Error deleting owner details:', error);
       throw error;
     }
   }
 
-
-  async deleteRelation(ownerCivilIdNumber: string, relationCivilIdNumber: string): Promise<boolean> {
+  async deleteRelation(
+    ownerCivilIdNumber: string,
+    relationCivilIdNumber: string,
+  ): Promise<boolean> {
     try {
       const relationDeletion = await this.ownerRelationsModel.deleteOne({
         OwnerCivilIdNumber: ownerCivilIdNumber,
@@ -102,7 +125,7 @@ export class MinistryOfficeService {
       }
       return true;
     } catch (error) {
-      console.error("Error deleting relation:", error);
+      console.error('Error deleting relation:', error);
       throw error;
     }
   }

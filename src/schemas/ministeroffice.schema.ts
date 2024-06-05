@@ -31,30 +31,33 @@ export class OwnerDetails extends Document {
   Relations: OwnerRelations[];
 }
 
-
 @Schema({ timestamps: true })
 export class OwnerRelations extends Document {
   @Prop()
-  OwnerCivilIdNumber: string
-  
+  OwnerCivilIdNumber: string;
+
   @Prop()
   Notes: string;
 
-   @Prop()
-   RelatedCivilIdNumber: string
+  @Prop()
+  RelatedCivilIdNumber: string;
 
-   @Prop()
-   RelatedWithOwner: string
+  @Prop()
+  RelatedWithOwner: string;
 
-   @Prop()
-   RelatedFullName:string
+  @Prop()
+  RelatedFullName: string;
 
-   @Prop()
+  @Prop()
   IsActive: boolean;
+
+  @Prop()
+  UserName: string;
+
+  @Prop()
+  UserId: string;
 }
 
-export const OwnerDetailsSchema =
-  SchemaFactory.createForClass(OwnerDetails);
-  export const OwnerRelationDetailsSchema =
+export const OwnerDetailsSchema = SchemaFactory.createForClass(OwnerDetails);
+export const OwnerRelationDetailsSchema =
   SchemaFactory.createForClass(OwnerRelations);
-

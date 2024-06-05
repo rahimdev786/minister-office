@@ -7,9 +7,10 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    //dev
     ConfigModule.forRoot({
       envFilePath: '.env.local',
-      isGlobal:true
+      isGlobal: true,
     }),
 
     // for test
@@ -23,7 +24,7 @@ import { ConfigModule } from '@nestjs/config';
     //   envFilePath: '.env.prod',
     //   isGlobal:true
     // }),
-    
+
     MinistryOfficeModule,
     MongooseModule.forRoot(process.env.DATABASE),
   ],
@@ -31,5 +32,5 @@ import { ConfigModule } from '@nestjs/config';
   providers: [AppService],
 })
 export class AppModule {
-  constructor() { }
+  constructor() {}
 }

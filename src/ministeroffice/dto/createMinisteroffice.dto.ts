@@ -37,7 +37,7 @@ export class OwnerDetailsDTO {
   @IsOptional()
   OwnerFullName: string;
 
-   @IsString()
+  @IsString()
   @IsOptional()
   OwnerOccupation: string;
 
@@ -52,6 +52,14 @@ export class OwnerDetailsDTO {
 }
 
 export class OwnerRelationsDTO {
+  @IsString()
+  @IsOptional()
+  UserName: string;
+
+  @IsString()
+  @IsOptional()
+  UserId: string;
+
   @IsNumberString()
   @IsNotEmpty()
   @Length(12, 12)
@@ -67,16 +75,14 @@ export class OwnerRelationsDTO {
   RelatedCivilIdNumber: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   RelatedWithOwner: string;
 
   @IsBoolean()
   @IsNotEmpty()
   IsActive: boolean;
-  
+
   @IsString()
   @IsOptional()
-  RelatedFullName :string
+  RelatedFullName: string;
 }
-
-
