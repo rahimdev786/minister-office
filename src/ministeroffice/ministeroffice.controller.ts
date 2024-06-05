@@ -42,17 +42,13 @@ export class MinistryOfficeController {
   ): Promise<OwnerDetails> {
     try {
       const ownerDetails = await this.ministryOfficeService.getOwnerDetails(ownerCivilIdNumber);
-      console.log(ownerDetails)
-      if (!ownerDetails) {
+      if (Object.keys(ownerDetails).length === 0) {
         return res.status(HttpStatus.NOT_FOUND).send({
           status: HttpStatus.NOT_FOUND,
+          data: ownerDetails,
           message: 'Owner details not found',
         });
       }
-       
-
-     
-
       return res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
         data: ownerDetails,
