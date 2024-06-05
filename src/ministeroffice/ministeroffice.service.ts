@@ -31,6 +31,7 @@ export class MinistryOfficeService {
       existingOwnerDetails.OwnerFullName = ownerData.OwnerFullName;
       existingOwnerDetails.OwnerOccupation = ownerData.OwnerOccupation;
       existingOwnerDetails.isActive = ownerData.isActive;
+      existingOwnerDetails.UserName = ownerData.UserName;
       if (ownerData.Relations && ownerData.Relations.length > 0) {
         for (const newRelation of ownerData.Relations) {
           const existingRelation = await this.ownerRelationsModel.findOne({
