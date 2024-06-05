@@ -35,8 +35,6 @@ export class MinistryOfficeController {
     }
   }
 
-
-
   @Get('getOwnerDetails/:ownerCivilIdNumber')
   async getOwnerDetails(
     @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
@@ -61,7 +59,6 @@ export class MinistryOfficeController {
       });
     }
   }
-
 
   @Delete('deleteOwnerDetails/:ownerCivilIdNumber')
   async deleteOwnerDetails(
