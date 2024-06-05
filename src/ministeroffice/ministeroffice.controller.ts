@@ -65,7 +65,6 @@ export class MinistryOfficeController {
     }
   }
 
-
   @Delete('deleteOwnerDetails/:ownerCivilIdNumber')
   async deleteOwnerDetails(
     @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
