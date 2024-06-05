@@ -8,9 +8,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      envFilePath: '.env.local',
+      isGlobal:true
     }),
-    MongooseModule.forRoot('mongodb://localhost:27017/ministryOffice'),
+    MongooseModule.forRoot(process.env.DATABASE),
     MinistryOfficeModule,
   ],
   controllers: [AppController],
