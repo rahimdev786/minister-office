@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MinistryOfficeModule } from './ministeroffice/ministeroffice.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -11,8 +11,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       envFilePath: '.env.local',
       isGlobal:true
     }),
-    MongooseModule.forRoot(process.env.DATABASE),
+
+    // for test
+    // ConfigModule.forRoot({
+    //   envFilePath: '.env.test',
+    //   isGlobal:true
+    // }),
+
+    // for production
+    // ConfigModule.forRoot({
+    //   envFilePath: '.env.prod',
+    //   isGlobal:true
+    // }),
+    
     MinistryOfficeModule,
+    MongooseModule.forRoot(process.env.DATABASE),
   ],
   controllers: [AppController],
   providers: [AppService],
