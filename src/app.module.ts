@@ -8,16 +8,16 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     //dev
-    // ConfigModule.forRoot({
-    //   envFilePath: '.env.local',
-    //   isGlobal: true,
-    // }),
-
-    // for test
     ConfigModule.forRoot({
       envFilePath: '.env.local',
       isGlobal: true,
     }),
+
+    // for test
+    // ConfigModule.forRoot({
+    //   envFilePath: '.env.test',
+    //   isGlobal: true,
+    // }),
 
     // for production
     // ConfigModule.forRoot({

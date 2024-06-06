@@ -4,22 +4,20 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { debugLevel } from './config';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
+import { buffer } from 'stream/consumers';
 
 async function bootstrap() {
+  const fastifyAdapter = new FastifyAdapter({ logger: true });
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({ logger: true }),
-    { logger: debugLevel },
+    fastifyAdapter,
+    { bufferLogs: true },
   );
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
-
-  //development
-  //await app.listen(process.env.PORT, process.env.HOST);
-
-  //test and production
   await app.listen(process.env.PORT, '');
 }
+
 bootstrap();
