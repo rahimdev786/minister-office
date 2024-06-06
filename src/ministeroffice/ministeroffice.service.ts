@@ -40,6 +40,7 @@ export class MinistryOfficeService {
       existingOwnerDetails.OwnerOccupation = ownerData.OwnerOccupation;
       existingOwnerDetails.IsActive = ownerData.IsActive;
       existingOwnerDetails.UserName = ownerData.UserName;
+      existingOwnerDetails.UserId = ownerData.UserId;
       if (ownerData.Relations && ownerData.Relations.length > 0) {
         for (const newRelation of ownerData.Relations) {
           const existingRelation = await this.ownerRelationsModel.findOne({
@@ -69,24 +70,29 @@ export class MinistryOfficeService {
 
   async getOwnerDetails(ownerCivilIdNumber: string): Promise<any> {
     try {
-      const ownerRelations = await this.ownerRelationsModel
-        .find({ OwnerCivilIdNumber: ownerCivilIdNumber })
-        .select('-_id -__v')
-        .lean()
-        .exec();
-      console.log('ownerRelations', ownerRelations);
-      if (ownerRelations.length === 0) {
-        return {};
-      }
-      const { Relations, ...ownerDetails } = await this.ownerDetailsModel
+      const fetchData = await this.ownerDetailsModel
         .findOne({ OwnerCivilIdNumber: ownerCivilIdNumber })
         .select('-_id -__v')
         .lean()
         .exec();
-      return {
-        ownerDetails,
-        ownerRelations,
-      };
+      console.log('fetchData', fetchData);
+      if (fetchData === null) {
+        // owner data not avaliable
+        return {};
+      } else {
+        // owner data avaliable
+        const { Relations, ...ownerDetails } = fetchData;
+        const ownerRelations = await this.ownerRelationsModel
+          .find({ OwnerCivilIdNumber: ownerCivilIdNumber })
+          .select('-_id -__v')
+          .lean()
+          .exec();
+        if (Relations.length === 0 && ownerRelations.length === 0) {
+          return { ownerDetails };
+        } else {
+          return { ownerDetails, ownerRelations };
+        }
+      }
     } catch (error) {
       console.error('Error fetching owner details:', error);
       throw error;

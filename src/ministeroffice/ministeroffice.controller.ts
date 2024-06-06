@@ -1,12 +1,20 @@
-import { Controller, Get, Post, Body, Param, Res, HttpStatus, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Res,
+  HttpStatus,
+  Delete,
+} from '@nestjs/common';
 import { MinistryOfficeService } from './ministeroffice.service';
 import { OwnerDetailsDTO } from './dto/createMinisteroffice.dto';
 import { OwnerDetails } from 'src/schemas/ministeroffice.schema';
 import { FastifyReply } from 'fastify';
-
 @Controller('MinisterOffice')
 export class MinistryOfficeController {
-  constructor(private readonly ministryOfficeService: MinistryOfficeService) { }
+  constructor(private readonly ministryOfficeService: MinistryOfficeService) {}
 
   @Post('CreateNote')
   async createMinisterUser(
@@ -41,7 +49,9 @@ export class MinistryOfficeController {
     @Res() res: FastifyReply,
   ): Promise<OwnerDetails> {
     try {
-      const ownerDetails = await this.ministryOfficeService.getOwnerDetails(ownerCivilIdNumber);
+      const ownerDetails =
+        await this.ministryOfficeService.getOwnerDetails(ownerCivilIdNumber);
+      //if object is empty
       if (Object.keys(ownerDetails).length === 0) {
         return res.status(HttpStatus.NOT_FOUND).send({
           status: HttpStatus.NOT_FOUND,
