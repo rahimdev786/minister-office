@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   OwnerDetailsDTO,
   OwnerRelationsDTO,
@@ -41,6 +45,8 @@ export class MinistryOfficeService {
       existingOwnerDetails.IsActive = ownerData.IsActive;
       existingOwnerDetails.UserName = ownerData.UserName;
       existingOwnerDetails.UserId = ownerData.UserId;
+      existingOwnerDetails.NominatingParty = ownerData.NominatingParty;
+      existingOwnerDetails.Nominator = ownerData.Nominator;
       if (ownerData.Relations && ownerData.Relations.length > 0) {
         for (const newRelation of ownerData.Relations) {
           const existingRelation = await this.ownerRelationsModel.findOne({
@@ -68,34 +74,88 @@ export class MinistryOfficeService {
     return existingOwnerDetails;
   }
 
-  async getOwnerDetails(ownerCivilIdNumber: string): Promise<any> {
+  // async getOwnerDetails(ownerCivilIdNumber?: string): Promise<any> {
+  //   const query: any = {};
+  //   try {
+  //     if (ownerCivilIdNumber) {
+  //       query.OwnerCivilIdNumber = ownerCivilIdNumber;
+  //     }
+  //     const fetchData = await this.ownerDetailsModel
+  //       .find(query)
+  //       .sort({ updatedAt: -1 })
+  //       .select('-_id -__v')
+  //       .lean()
+  //       .exec();
+  //     const fetchDataWithRelations = await Promise.all(
+  //       fetchData.map(async (details) => {
+  //         const getChildDetails = await this.ownerRelationsModel
+  //           .find({
+  //             OwnerCivilIdNumber: details.OwnerCivilIdNumber,
+  //           })
+  //           .lean()
+  //           .exec();
+  //         // Assign fetched child details to Relations property of details object
+  //         details.Relations = getChildDetails;
+  //         return details;
+  //       }),
+  //     );
+  //     console.log(fetchDataWithRelations);
+  //     return fetchDataWithRelations;
+  //   } catch (error) {
+  //     throw new NotFoundException(
+  //       'Failed to fetch data with owner id: ' + ownerCivilIdNumber,
+  //     );
+  //   }
+  // }
+
+  async getOwnerDetails(param?: FilterHistory): Promise<any> {
+    const query: any = {};
     try {
+      if (param.ownerCivilIdNumber) {
+        query.OwnerCivilIdNumber = param.ownerCivilIdNumber;
+      }
+
+      // Add date range criteria if startDate and endDate are provided
+      if (param.startDate && param.endDate) {
+        param.startDate = new Date(param.startDate);
+        param.endDate = new Date(param.endDate);
+        query.updatedAt = { $gte: param.startDate, $lte: param.endDate };
+      } else if (param.startDate) {
+        param.startDate = new Date(param.startDate);
+        query.updatedAt = { $gte: param.startDate };
+      } else if (param.endDate) {
+        param.endDate = new Date(param.endDate);
+        query.updatedAt = { $lte: param.endDate };
+      }
+      console.log('query data', query);
+
       const fetchData = await this.ownerDetailsModel
-        .findOne({ OwnerCivilIdNumber: ownerCivilIdNumber })
+        .find(query)
+        .sort({ updatedAt: -1 })
         .select('-_id -__v')
         .lean()
         .exec();
-      console.log('fetchData', fetchData);
-      if (fetchData === null) {
-        // owner data not avaliable
-        return {};
-      } else {
-        // owner data avaliable
-        const { Relations, ...ownerDetails } = fetchData;
-        const ownerRelations = await this.ownerRelationsModel
-          .find({ OwnerCivilIdNumber: ownerCivilIdNumber })
-          .select('-_id -__v')
-          .lean()
-          .exec();
-        if (Relations.length === 0 && ownerRelations.length === 0) {
-          return { ownerDetails };
-        } else {
-          return { ownerDetails, ownerRelations };
-        }
-      }
+
+      const fetchDataWithRelations = await Promise.all(
+        fetchData.map(async (details) => {
+          const getChildDetails = await this.ownerRelationsModel
+            .find({
+              OwnerCivilIdNumber: details.OwnerCivilIdNumber,
+            })
+            .sort({ updatedAt: -1 })
+            .lean()
+            .exec();
+          details.Relations = getChildDetails;
+          return details;
+        }),
+      );
+
+      console.log(fetchDataWithRelations);
+      return fetchDataWithRelations;
     } catch (error) {
-      console.error('Error fetching owner details:', error);
-      throw error;
+      throw new NotFoundException(
+        'Failed to fetch data with owner id: ' + param.ownerCivilIdNumber,
+      );
     }
   }
 
@@ -135,4 +195,10 @@ export class MinistryOfficeService {
       throw error;
     }
   }
+}
+
+export interface FilterHistory {
+  ownerCivilIdNumber: string;
+  startDate: Date;
+  endDate: Date;
 }

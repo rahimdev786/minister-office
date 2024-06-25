@@ -26,6 +26,12 @@ export class OwnerDetails extends Document {
   @Prop()
   IsActive: boolean;
 
+  @Prop()
+  NominatingParty: string;
+
+  @Prop()
+  Nominator: string;
+
   @Prop({ type: [{ type: Object, ref: 'OwnerRelations' }] })
   @Type(() => OwnerRelations)
   Relations: OwnerRelations[];

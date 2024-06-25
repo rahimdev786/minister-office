@@ -45,6 +45,14 @@ export class OwnerDetailsDTO {
   @IsNotEmpty()
   IsActive: boolean;
 
+  @IsString()
+  @IsOptional()
+  NominatingParty: string;
+
+  @IsString()
+  @IsOptional()
+  Nominator: string;
+
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => OwnerRelationsDTO)

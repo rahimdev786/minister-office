@@ -3,12 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Param,
   Res,
   HttpStatus,
-  Delete,
+  NotFoundException,
+  InternalServerErrorException,
+  Query,
 } from '@nestjs/common';
-import { MinistryOfficeService } from './ministeroffice.service';
+import { FilterHistory, MinistryOfficeService } from './ministeroffice.service';
 import { OwnerDetailsDTO } from './dto/createMinisteroffice.dto';
 import { OwnerDetails } from 'src/schemas/ministeroffice.schema';
 import { FastifyReply } from 'fastify';
@@ -43,31 +44,23 @@ export class MinistryOfficeController {
     }
   }
 
-  @Get('getOwnerDetails/:ownerCivilIdNumber')
+  @Get('getOwnerDetails')
   async getOwnerDetails(
-    @Param('ownerCivilIdNumber') ownerCivilIdNumber: string,
-    @Res() res: FastifyReply,
+    @Query() queryData?: FilterHistory,
+    @Res() res?: FastifyReply,
   ): Promise<OwnerDetails> {
     try {
       const ownerDetails =
-        await this.ministryOfficeService.getOwnerDetails(ownerCivilIdNumber);
-      //if object is empty
-      if (Object.keys(ownerDetails).length === 0) {
-        return res.status(HttpStatus.NOT_FOUND).send({
-          status: HttpStatus.NOT_FOUND,
-          data: ownerDetails,
-          message: 'Owner details not found',
-        });
-      }
+        await this.ministryOfficeService.getOwnerDetails(queryData);
       return res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
         data: ownerDetails,
       });
     } catch (error) {
-      return res.status(HttpStatus.BAD_REQUEST).send({
-        status: HttpStatus.BAD_REQUEST,
-        message: 'Failed to fetch owner details',
-      });
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(error);
     }
   }
 
