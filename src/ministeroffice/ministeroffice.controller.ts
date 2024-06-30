@@ -10,9 +10,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { FilterHistory, MinistryOfficeService } from './ministeroffice.service';
-import { OwnerDetailsDTO } from './dto/createMinisteroffice.dto';
+
 import { OwnerDetails } from 'src/schemas/ministeroffice.schema';
 import { FastifyReply } from 'fastify';
+import { OwnerDetailsDTO } from './dto/minsteroffice.dto';
 @Controller('MinisterOffice')
 export class MinistryOfficeController {
   constructor(private readonly ministryOfficeService: MinistryOfficeService) {}

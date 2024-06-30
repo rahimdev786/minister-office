@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MinistryOfficeModule } from './ministeroffice/ministeroffice.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { DepartmentModule } from './department/department.module';
 
 @Module({
   imports: [
@@ -23,8 +24,9 @@ import { ConfigModule } from '@nestjs/config';
     //   isGlobal:true
     // }),
 
-    MinistryOfficeModule,
     MongooseModule.forRoot(process.env.DATABASE),
+    MinistryOfficeModule,
+    DepartmentModule,
   ],
   controllers: [],
   providers: [],

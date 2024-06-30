@@ -3,10 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  OwnerDetailsDTO,
-  OwnerRelationsDTO,
-} from './dto/createMinisteroffice.dto';
+import { OwnerDetailsDTO } from './dto/minsteroffice.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   OwnerDetails,
@@ -73,40 +70,6 @@ export class MinistryOfficeService {
 
     return existingOwnerDetails;
   }
-
-  // async getOwnerDetails(ownerCivilIdNumber?: string): Promise<any> {
-  //   const query: any = {};
-  //   try {
-  //     if (ownerCivilIdNumber) {
-  //       query.OwnerCivilIdNumber = ownerCivilIdNumber;
-  //     }
-  //     const fetchData = await this.ownerDetailsModel
-  //       .find(query)
-  //       .sort({ updatedAt: -1 })
-  //       .select('-_id -__v')
-  //       .lean()
-  //       .exec();
-  //     const fetchDataWithRelations = await Promise.all(
-  //       fetchData.map(async (details) => {
-  //         const getChildDetails = await this.ownerRelationsModel
-  //           .find({
-  //             OwnerCivilIdNumber: details.OwnerCivilIdNumber,
-  //           })
-  //           .lean()
-  //           .exec();
-  //         // Assign fetched child details to Relations property of details object
-  //         details.Relations = getChildDetails;
-  //         return details;
-  //       }),
-  //     );
-  //     console.log(fetchDataWithRelations);
-  //     return fetchDataWithRelations;
-  //   } catch (error) {
-  //     throw new NotFoundException(
-  //       'Failed to fetch data with owner id: ' + ownerCivilIdNumber,
-  //     );
-  //   }
-  // }
 
   async getOwnerDetails(param?: FilterHistory): Promise<any> {
     const query: any = {};
