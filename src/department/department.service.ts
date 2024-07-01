@@ -54,9 +54,9 @@ export class DepartmentService {
         query.department = param.department;
       }
 
-      if (param.status) {
-        query.status = param.status;
-      }
+      // if (param.status) {
+      //   query.status = param.status;
+      // }
 
       if (param.startDate && param.endDate) {
         const startDate = new Date(param.startDate);
@@ -93,7 +93,7 @@ export class DepartmentService {
 export interface FilterDepartment {
   civilIdNumber?: string;
   department?: string;
-  status?: string;
+  //  status?: string;
   startDate?: Date;
   endDate?: Date;
 }
