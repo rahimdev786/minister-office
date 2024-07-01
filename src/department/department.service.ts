@@ -70,8 +70,6 @@ export class DepartmentService {
         query.updatedAt = { $lte: endDate };
       }
 
-      console.log('Query Details:', query);
-
       const fetchData = await this.departmentModel
         .find(query)
         .sort({ updatedAt: -1 })
@@ -82,7 +80,6 @@ export class DepartmentService {
       if (fetchData.length === 0) {
         throw new NotFoundException('No data available');
       }
-      console.log(fetchData);
       return fetchData;
     } catch (error) {
       throw new NotFoundException('Failed to retrieve data');

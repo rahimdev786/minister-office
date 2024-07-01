@@ -13,7 +13,7 @@ import { DepartmentService, FilterDepartment } from './department.service';
 import { CreateDepartmentDto } from './dto/department.dto';
 import { FastifyReply } from 'fastify';
 
-@Controller('Department')
+@Controller('department')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
