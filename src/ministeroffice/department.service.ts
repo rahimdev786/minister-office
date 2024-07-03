@@ -22,7 +22,6 @@ export class DepartmentService {
           $set: {
             status: createDto.status,
             report: createDto.report,
-            department: createDto.department,
             reportedUserId: createDto.reportedUserId,
             reportedUserName: createDto.reportedUserName,
           },
