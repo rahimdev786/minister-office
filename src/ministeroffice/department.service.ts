@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateDepartmentDto } from './dto/department.dto';
 import { Department } from 'src/schemas/department.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { CreateDepartmentDto } from './dto/department.dto';
 
 @Injectable()
 export class DepartmentService {
@@ -45,38 +45,41 @@ export class DepartmentService {
   async getHistory(param: FilterDepartment) {
     try {
       let query: any = {};
-
       if (param.civilIdNumber) {
-        query.OwnerCivilIdNumber = param.civilIdNumber;
+        query.civilIdNumber = param.civilIdNumber;
       }
-
       if (param.department) {
         query.department = param.department;
       }
-
       // if (param.status) {
       //   query.status = param.status;
       // }
-
       if (param.startDate && param.endDate) {
         const startDate = new Date(param.startDate);
         const endDate = new Date(param.endDate);
-        query.updatedAt = { $gte: startDate, $lte: endDate };
+        endDate.setDate(endDate.getDate() + 1);
+        query.updatedAt = {
+          $gte: startDate,
+          $lte: endDate,
+        };
       } else if (param.startDate) {
         const startDate = new Date(param.startDate);
-        query.updatedAt = { $gte: startDate };
+        query.updatedAt = {
+          $gte: startDate,
+        };
       } else if (param.endDate) {
         const endDate = new Date(param.endDate);
-        query.updatedAt = { $lte: endDate };
+        endDate.setDate(endDate.getDate() + 1);
+        query.updatedAt = {
+          $lte: endDate,
+        };
       }
-
       const fetchData = await this.departmentModel
         .find(query)
         .sort({ updatedAt: -1 })
         .select('-_id -__v')
         .lean()
         .exec();
-
       if (fetchData.length === 0) {
         throw new NotFoundException('No data available');
       }

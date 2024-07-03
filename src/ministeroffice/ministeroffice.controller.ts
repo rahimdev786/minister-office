@@ -14,9 +14,14 @@ import { FilterHistory, MinistryOfficeService } from './ministeroffice.service';
 import { OwnerDetails } from 'src/schemas/ministeroffice.schema';
 import { FastifyReply } from 'fastify';
 import { OwnerDetailsDTO } from './dto/minsteroffice.dto';
+import { DepartmentService, FilterDepartment } from './department.service';
+import { CreateDepartmentDto } from './dto/department.dto';
 @Controller('MinisterOffice')
 export class MinistryOfficeController {
-  constructor(private readonly ministryOfficeService: MinistryOfficeService) {}
+  constructor(
+    private readonly ministryOfficeService: MinistryOfficeService,
+    private readonly departmentService: DepartmentService,
+  ) {}
 
   @Post('CreateNote')
   async createMinisterUser(
@@ -56,6 +61,41 @@ export class MinistryOfficeController {
       return res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
         data: ownerDetails,
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  @Post('CreateReport')
+  async create(
+    @Body() createDto: CreateDepartmentDto,
+    @Res() res: FastifyReply,
+  ) {
+    try {
+      const result = await this.departmentService.create(createDto);
+      return res.send({
+        status: HttpStatus.CREATED,
+        message: result.message,
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  @Get('ReportHistory')
+  async histiry(@Query() params: FilterDepartment, @Res() res: FastifyReply) {
+    try {
+      const result = await this.departmentService.getHistory(params);
+      return res.send({
+        status: HttpStatus.OK,
+        data: result,
       });
     } catch (error) {
       if (error instanceof NotFoundException) {
