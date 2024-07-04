@@ -14,10 +14,14 @@ export class DepartmentService {
   async create(createDto: CreateDepartmentDto) {
     let existingDepartment = await this.departmentModel.findOne({
       civilIdNumber: createDto.civilIdNumber,
+      department: createDto.department,
     });
     if (existingDepartment) {
       existingDepartment = await this.departmentModel.findOneAndUpdate(
-        { civilIdNumber: createDto.civilIdNumber },
+        {
+          civilIdNumber: createDto.civilIdNumber,
+          department: createDto.department,
+        },
         {
           $set: {
             status: createDto.status,
